@@ -108,5 +108,5 @@ const styles = {
 		"flex-row items-center justify-between gap-4 px-4 py-3 border-b border-gray-800 w-full max-w-[1024px] mx-auto pointer-events-auto",
 	todoText: "flex-1 text-xl text-white",
   // text colors need to be in a format the native platforms can understand. Another alternative to text-gray-500 would be text-[rgb(107,114,128)]
-	completedText: "line-through text-gray-300/[.5]",
+	completedText: "line-through text-gray-300/[0.5]",
 };
