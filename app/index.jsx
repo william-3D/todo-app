@@ -4,6 +4,7 @@ import { useState, useContext } from "react";
 import { ThemeContext } from "@/context/ThemeContext";
 import { AntDesign, Octicons } from "@expo/vector-icons";
 import { Roboto_400Regular, useFonts } from "@expo-google-fonts/roboto";
+import Animated, { LinearTransition } from "react-native-reanimated";
 
 import { data } from "@/data/todos";
 
@@ -96,7 +97,7 @@ export default function Index() {
 					}
 				>
 					<Octicons
-						name={colorScheme === "dark" ? "sun" : "moon"}
+						name={colorScheme === "dark" ? "moon" : "sun"}
 						className="w-9"
 						size={30}
 						color={theme.text}
@@ -105,11 +106,13 @@ export default function Index() {
 				</Pressable>
 			</View>
 
-			<FlatList
+			<Animated.FlatList
 				data={todos}
 				renderItem={renderItem}
 				keyExtractor={(todo) => todo.id.toString()}
 				contentContainerStyle={{ flexGrow: 1 }}
+				itemLayoutAnimation={LinearTransition}
+				keyboardDismissMode="on-drag"
 			/>
 		</SafeAreaView>
 	);
@@ -119,7 +122,7 @@ const createStyles = (colorScheme) => {
 	return {
 		container: `flex-1 ${colorScheme === "dark" ? "bg-black" : "bg-white"}`,
 		inputContainer:
-			"flex-row gap-2 items-center mb-3 p-3 w-full max-w-[1024px] mx-auto pointer-events-auto",
+			"flex-row gap-3 items-center mb-3 p-3 w-full max-w-[1024px] mx-auto pointer-events-auto",
 		input: `flex-1 p-4 rounded-lg bg-gray-800 text-xl ${colorScheme === "dark" ? "text-white" : "text-black"}`,
 		addButton: `px-6 py-4 ${colorScheme === "dark" ? "bg-blue-300" : "bg-blue-500"} rounded-lg`,
 		addButtonText: `${colorScheme === "dark" ? "text-black" : "text-white"} text-xl font-semibold`,
