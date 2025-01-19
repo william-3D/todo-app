@@ -6,6 +6,7 @@ import { AntDesign, Octicons } from "@expo/vector-icons";
 import { Roboto_400Regular, useFonts } from "@expo-google-fonts/roboto";
 import Animated, { LinearTransition } from "react-native-reanimated";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StatusBar } from "expo-status-bar";
 
 import { data } from "@/data/todos";
 
@@ -149,6 +150,8 @@ export default function Index() {
 				itemLayoutAnimation={LinearTransition}
 				keyboardDismissMode="on-drag"
 			/>
+
+			<StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
 		</SafeAreaView>
 	);
 }
