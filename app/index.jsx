@@ -1,7 +1,8 @@
 import { Text, View, TextInput, Pressable, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
-import AntDesign from "@expo/vector-icons/AntDesign";
+import { useState, useContext } from "react";
+import { ThemeContext } from "@/context/ThemeContext";
+import { AntDesign, Octicons } from "@expo/vector-icons";
 import { Roboto_400Regular, useFonts } from "@expo-google-fonts/roboto";
 
 import { data } from "@/data/todos";
@@ -9,7 +10,7 @@ import { data } from "@/data/todos";
 export default function Index() {
 	const [todos, setTodos] = useState(data.sort((a, b) => b.id - a.id));
 	const [text, setText] = useState("");
-
+	const { colorScheme, setColorScheme, theme } = useContext(ThemeContext);
 	const [loaded, error] = useFonts({
 		Roboto_400Regular,
 	});
@@ -22,7 +23,9 @@ export default function Index() {
 		);
 	}
 
-  const customFont = "Roboto_400Regular";
+	const customFont = "Roboto_400Regular";
+
+  const styles = createStyles(colorScheme);
 
 	const createTodo = () => {
 		if (text.trim()) {
@@ -85,6 +88,21 @@ export default function Index() {
 						Add
 					</Text>
 				</Pressable>
+				<Pressable
+					onPress={() =>
+						setColorScheme(
+							colorScheme === "dark" ? "light" : "dark"
+						)
+					}
+				>
+					<Octicons
+						name={colorScheme === "dark" ? "sun" : "moon"}
+						className="w-9"
+						size={30}
+						color={theme.text}
+						selectable={undefined}
+					/>
+				</Pressable>
 			</View>
 
 			<FlatList
@@ -97,16 +115,17 @@ export default function Index() {
 	);
 }
 
-const styles = {
-	container: "flex-1 bg-black",
-	inputContainer:
-		"flex-row items-center mb-3 p-3 w-full max-w-[1024px] mx-auto pointer-events-auto",
-	input: "flex-1 mr-3 p-4 rounded-lg bg-gray-800 text-xl text-white",
-	addButton: "px-6 py-4 bg-blue-500 hover:bg-blue-600 rounded-lg",
-	addButtonText: "text-white text-xl font-semibold",
-	todoItem:
-		"flex-row items-center justify-between gap-4 px-4 py-3 border-b border-gray-800 w-full max-w-[1024px] mx-auto pointer-events-auto",
-	todoText: "flex-1 text-xl text-white",
-  // text colors need to be in a format the native platforms can understand. Another alternative to text-gray-500 would be text-[rgb(107,114,128)]
-	completedText: "line-through text-gray-300/[0.5]",
+const createStyles = (colorScheme) => {
+	return {
+		container: `flex-1 ${colorScheme === "dark" ? "bg-black" : "bg-white"}`,
+		inputContainer:
+			"flex-row gap-2 items-center mb-3 p-3 w-full max-w-[1024px] mx-auto pointer-events-auto",
+		input: `flex-1 p-4 rounded-lg bg-gray-800 text-xl ${colorScheme === "dark" ? "text-white" : "text-black"}`,
+		addButton: `px-6 py-4 ${colorScheme === "dark" ? "bg-blue-300" : "bg-blue-500"} rounded-lg`,
+		addButtonText: `${colorScheme === "dark" ? "text-black" : "text-white"} text-xl font-semibold`,
+		todoItem:
+			"flex-row items-center justify-between gap-4 px-4 py-3 border-b border-gray-800 w-full max-w-[1024px] mx-auto pointer-events-auto",
+		todoText: `flex-1 text-xl ${colorScheme === "dark" ? "text-white" : "text-black"}`,
+		completedText: `line-through text-gray-400`,
+	};
 };
