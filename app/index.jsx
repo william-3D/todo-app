@@ -2,12 +2,27 @@ import { Text, View, TextInput, Pressable, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { Roboto_400Regular, useFonts } from "@expo-google-fonts/roboto";
 
 import { data } from "@/data/todos";
 
 export default function Index() {
 	const [todos, setTodos] = useState(data.sort((a, b) => b.id - a.id));
 	const [text, setText] = useState("");
+
+	const [loaded, error] = useFonts({
+		Roboto_400Regular,
+	});
+
+	if (!loaded && !error) {
+		return (
+			<View>
+				<Text>Loading...</Text>
+			</View>
+		);
+	}
+
+  const customFont = "Roboto_400Regular";
 
 	const createTodo = () => {
 		if (text.trim()) {
@@ -35,6 +50,7 @@ export default function Index() {
 				className={`${styles.todoText} ${
 					item.completed ? styles.completedText : ""
 				}`}
+				style={{ fontFamily: customFont }}
 				onPress={() => toggleCompleteStatus(item.id)}
 			>
 				{item.title}
@@ -55,13 +71,19 @@ export default function Index() {
 			<View className={styles.inputContainer}>
 				<TextInput
 					className={styles.input}
+					style={{ fontFamily: customFont }}
 					placeholder="Add a task for the day!"
 					placeholderTextColor="gray"
 					value={text}
 					onChangeText={setText}
 				/>
 				<Pressable onPress={createTodo} className={styles.addButton}>
-					<Text className={styles.addButtonText}>Add</Text>
+					<Text
+						className={styles.addButtonText}
+						style={{ fontFamily: customFont }}
+					>
+						Add
+					</Text>
 				</Pressable>
 			</View>
 
