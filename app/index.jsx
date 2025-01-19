@@ -1,20 +1,55 @@
 import { Text, View, TextInput, Pressable, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { ThemeContext } from "@/context/ThemeContext";
 import { AntDesign, Octicons } from "@expo/vector-icons";
 import { Roboto_400Regular, useFonts } from "@expo-google-fonts/roboto";
 import Animated, { LinearTransition } from "react-native-reanimated";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { data } from "@/data/todos";
 
 export default function Index() {
-	const [todos, setTodos] = useState(data.sort((a, b) => b.id - a.id));
+	const [todos, setTodos] = useState([]);
 	const [text, setText] = useState("");
 	const { colorScheme, setColorScheme, theme } = useContext(ThemeContext);
 	const [loaded, error] = useFonts({
 		Roboto_400Regular,
 	});
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const jsonValue = await AsyncStorage.getItem("TodoApp");
+				const storageTodos = jsonValue != null 
+					? JSON.parse(jsonValue) 
+					: null;
+
+				if (storageTodos && storageTodos.length > 0) {
+					setTodos(storageTodos.sort((a, b) => b.id - a.id));
+				} else {
+					setTodos(data.sort((a, b) => b.id - a.id));
+				} 
+			} catch (e) {
+				console.error(e);
+			}
+		}
+
+		fetchData();
+	}, [])
+
+	useEffect(() => {
+		const storeData = async () => {
+			try {
+				const jsonValue = JSON.stringify(todos);
+				await AsyncStorage.setItem("TodoApp", jsonValue);
+			} catch (e) {
+				console.error(e);
+			}
+		}
+
+		storeData();
+	}, [todos])
 
 	if (!loaded && !error) {
 		return (
@@ -26,7 +61,7 @@ export default function Index() {
 
 	const customFont = "Roboto_400Regular";
 
-  const styles = createStyles(colorScheme);
+  	const styles = createStyles(colorScheme);
 
 	const createTodo = () => {
 		if (text.trim()) {
